@@ -435,7 +435,7 @@ class UeditorController extends BaseController {
 				$host=(is_ssl() ? 'https' : 'http')."://".$_SERVER['HTTP_HOST'];
 
 				$upfile = $info['upfile'];
-                $url = "https://a.ym8800.com" . trim(UPLOAD_PATH, '.') . $upfile['savename'];
+                $url = CC('image_host') . trim(UPLOAD_PATH, '.') . $upfile['savename'];
                 $data = [
                     "resource_id" => $upfile['savename'],
                     "img_url" => $url,
