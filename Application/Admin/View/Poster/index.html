@@ -1,0 +1,182 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <include file="Base/_header" />
+  <title>菜单管理</title>
+</head>
+
+<body>
+  <nav class="breadcrumb "><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 基本设置 <span class="c-gray en">&gt;</span> 菜单管理 <a class="btn btn-success radius r mr-20" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+  <div class="pd-20 ">
+    <div class="cl pd-5 bg-1 bk-gray mt-20">
+      <span class="l">
+        <a class="btn btn-primary radius"  href="<{:U('Admin/Menu/menu_add')}>"><i class="Hui-iconfont">&#xe600;</i> 添加菜单</a>
+      </span>
+    </div>
+    <div class="mt-20">
+      <div class="main cl">
+        <div class="panel col-sm-12 panel-default f-l">
+          <div class="panel-header">选择分组:
+            <?php echo $group_v['name']; ?>
+            <div class="tabBar cl">
+              <?php foreach ($group_datas as $key => $value):  ?>
+              <span role="tab" class="<?php echo I('get.gid')==$value['id']?'current':''; ?>"><a class="<?php echo I('get.gid')==$value['id']?'c-white':''; ?>"  href="<{:U('Admin/Menu/index',array('gid'=>$value['id']))}>" ><?php echo $value['name']; ?></a></span>
+              <?php endforeach ?>
+            </div>
+          </div>
+          <div class="panel-body cl fl">
+
+            <section class=" cl col-sm-3 ">
+              <div class="weixin-box " style="height:400px">
+                <div class="header cl">
+                  <div class="title f-l">漫娱</div>
+                  <div class="title f-r">more</div>
+                </div>
+                <div class="content"></div>
+                <div class="footer  cl full" style="position:absolute;bottom:0; margin-bottom:20px;">
+                  <div class="keyboard col-sm-2 f-l">键盘</div>
+                  <ul class="menu pos-r col-sm-10  f-l">
+                    <?php     $menu_n=0;  
+                    foreach ($menu_datas as $key => $value):  //一级菜单   ?>
+                    <li class="col-sm-4 pos-r">
+                      <?php if (!empty($value['sub_button'])){ //二级菜单  ?>
+                        <span class="btn btn-block full"><?php echo $value['name']; ?>+</span>
+                        <ul class="pos-a second" style="bottom:30px;left:0;width:100%;">
+                          <?php 
+                          $sub_button = $value['sub_button'];
+                          $num = count($value['sub_button']);
+                            ?>
+                          <?php foreach ($sub_button as $sub_k => $sub_v): ?>
+                            <li class="pos-r full"  >
+                              <?php if (!empty($sub_v['sub_button'])){ //三级菜单 ?>
+                                <span class="btn full"  ><?php echo $sub_v['name']; ?>+</span>
+                                <ul class="pos-a second" style="bottom:0;<?php echo $menu_n==2?'right':'left'; ?>:100%;width:100%;">
+                                  <?php
+                                    $sub_button2 = $sub_v['sub_button'];
+                                    $num2 = count($sub_v['sub_button']);  ?>
+                                    <?php foreach ($sub_button2 as $sub_k2 => $sub_v2): ?>
+                                      <li class="pos-r full" >
+                                        <span class="btn full"><?php echo $sub_v2['name']; ?></span>
+                                      </li>
+                                    <?php endforeach ?>
+                                </ul>
+                              <?php }else{ ?>
+                                <span class="btn full"><?php echo $sub_v['name']; ?></span>
+                              <?php } ?>
+                            </li>                            
+                          <?php endforeach ?>
+
+                        </ul>
+                      <?php }else{ ?>
+                        <span class="btn btn-block full"><?php echo $value['name']; ?></span>
+                      <?php } 
+                          $menu_n++;      ?>
+                    </li>
+                    <?php endforeach ?>
+                  </ul>
+                </div>
+
+              </div>
+            </section>
+            <table class="table table-border table-bordered table-bg table-hover col-sm-9 ">
+              <thead>
+                <tr class="text-c">
+                  <th width="40">
+                    <input name="" type="checkbox" value="">
+                  </th>
+                  <th width="50px">编号</th>
+                  <th width="280px">上级编号</th>
+                  <th width="280px">菜单名称</th>
+                  <th width="40px">类型</th>
+                  <th width="280px">关键词</th>
+                  <th width="200px">外链url</th>
+                  <th width="200px">媒体id</th>
+                  <th width="100px">显示</th>
+                  <th width="50px">排序</th>
+                  <th width="200px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($menu as $key => $value): ?>
+                <tr class="text-c va-m">
+                  <td>
+                    <input name="" type="checkbox" value="">
+                  </td>
+                  <td>
+                    <?php echo $value['id']; ?>
+                  </td>
+                  <td>
+                    <?php echo $value['pid']; ?>
+                  </td>
+                  <td>
+                    <?php echo $value['name']; ?>
+                  </td>
+                  <td>
+                    <?php echo $value['type']; ?>
+                  </td>
+                  <td>
+                    <?php echo $value['keyword']; ?>
+                  </td>
+                  <td class="text-l">
+                    <?php echo str_cut($value['url'],0,60); ?>
+                  </td>
+                  <td>
+                    <?php echo $value['media_id']; ?>
+                  </td>
+                  <td>
+                    <?php echo $value['is_show']?'显示':'不显示'; ?>
+                  </td>
+                  <td>
+                    <?php echo $value['orders']; ?>
+                  </td>
+                  <td class="td-manage">
+                    <a style="text-decoration:none" onClick="menu_stop(this,<?php echo $value['id']; ?>)" href="javascript:;" title="下架"><i class="Hui-iconfont">&#xe6de;</i></a>
+                    <a style="text-decoration:none" class="ml-5" href="<{:U('Admin/Menu/menu_add',array('id'=>$value['id'] ))}>" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a>
+                    <a style="text-decoration:none" class="ml-5" onClick="menu_del(this,<?php echo $value['id']; ?>)" href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>
+                  </td>
+                </tr>
+                <?php endforeach ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <load href="__PUBLIC__/Admin/lib/jquery/1.9.1/jquery.min.js" />
+  <load href="__PUBLIC__/Admin/lib/layer/1.9.3/layer.js" />
+  <load href="__PUBLIC__/Admin/lib/icheck/jquery.icheck.min.js" />
+  <load href="__PUBLIC__/Admin/lib/My97DatePicker/WdatePicker.js" />
+  <load href="__PUBLIC__/Admin/lib/datatables/1.10.0/jquery.dataTables.min.js" />
+  <load href="__PUBLIC__/Admin/js/H-ui.js" />
+  <load href="__PUBLIC__/Admin/js/menu.js" />
+  <load href="__PUBLIC__/Admin/js/editable.js" />
+  <load href="__PUBLIC__/Admin/js/H-ui.admin.js" />
+  <script type="text/javascript">
+    /*菜单-删除*/
+    function menu_del(obj, id) {
+      layer.confirm('确认要删除吗？', function(index) {
+        $.ajax({
+            url: 'Admin/Index/del_action',
+            type: 'post',
+            dataType: 'json',
+            data: {
+              id: id,
+              type: 'menu'
+            },
+          })
+          .done(function(res) {
+            if (res.code == '0001') {
+              $(obj).parents("tr").remove();
+              layer.msg('已删除!', 1);
+            };
+          })
+
+
+      });
+    }
+  </script>
+</body>
+
+</html>

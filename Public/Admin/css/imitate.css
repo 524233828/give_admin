@@ -1,0 +1,163 @@
+@charset "utf-8";
+body {
+  height: 100%;
+  overflow: hidden;
+  margin: 0px;
+  padding: 0px;
+}
+
+.box {
+  height: 100%;
+  background: #ff0000;
+  position: absolute;
+  width: 100%;
+}
+
+.weixin-box {
+  height: 100%;
+  position: absolute;
+  width: 100%;
+}
+
+.weixin-box {
+  background: #f6f6f6;
+  border: 1px solid #eee;
+  position: relative;
+}
+
+.header .title:active,
+.header .title:visited,
+.header .title:hover,
+.header .title{
+	color:#fff;
+}
+.weixin-box .header {
+  background: #666;
+  color: #fff;
+
+}
+
+.weixin-box .footer {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  background: #fff;
+}
+
+.content article {
+  margin: 6px 12px;
+  background: #fff;
+}
+
+.content article .first .full {
+  overflow: hidden;
+}
+
+.content article .first {
+  position: relative;
+  height: 28%;
+  overflow: hidden;
+  border: 6px solid #fff;
+}
+
+.content article .first .title {
+  position: absolute;
+  background: rgba(0, 0, 0, .4);
+  color: #fff;
+  bottom: 0;
+  left: 0;
+  padding: 2px 4px;
+  width: 100%;
+}
+
+.content article .sec {
+  height: 40px;
+  line-height: 40px;
+  padding: 6px;
+  border-top: 1px solid #eee;
+}
+
+.content article .sec .left {
+  padding: 0 6px;
+  float: left;
+}
+
+.content article .sec .right {
+  width: 40px;
+  height: 40px;
+  float: right;
+}
+
+.content {
+  height: 80%;
+  position: relative;
+  width: 100%;
+}
+
+.content .main {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+}
+
+.content .wx,
+.content .me {
+  padding: 6px 0;
+}
+
+.content .wx .left {
+  float: left;
+  height: 40px;
+  width: 40px;
+  padding: 0 6px;
+}
+
+.content .me .right {
+  float: right;
+  height: 40px;
+  width: 40px;
+  padding: 0 6px;
+}
+
+.content .wx .text,
+.content .me .text {
+  float: right;
+  border-radius: 6px;
+  background: #b1e866;
+  padding: 0 10px;
+  border: 1px solid #eee;
+  max-width: 60%;
+  padding: 10px;
+}
+
+.content .wx .text {
+  float: left !important;
+  background: #fff;
+}
+
+.content {
+  overflow: hidden;
+}
+
+.content ul {
+  text-indent: 0;
+}
+
+.content .one {
+  padding: 10px;
+}
+
+.content .one .date {
+  font-size: 10px;
+  padding: 6px 0;
+  color: #999;
+}
+
+.content .one .title,
+.content .one .view_all a {
+  font-weight: bold;
+}
+
+.col-sm-8 {
+  width: 66.66666666666%;
+}
