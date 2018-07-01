@@ -6,7 +6,7 @@ return array(
     'DB_NAME' => 'dobee',
     'DB_HOST' => '127.0.0.1',
     'DB_USER' => 'root',
-    'DB_PWD' => 'root',
+    'DB_PWD' => 'sure12580',
     'DB_PREFIX' => 'db_',
     //url路由配置
     'URL_ROUTER_ON'			=> true,

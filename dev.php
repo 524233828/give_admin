@@ -35,7 +35,7 @@ define('UPLOAD_PATH', './upload/');
 // 数据目录
 define('DATA_PATH', './Data/');
 define('PUBLIC_PATH', './Public/');
-
+define('_PHP_FILE_', 'dev.php');
 include 'vendor/autoload.php';
 
 // 引入ThinkPHP入口文件

@@ -31,7 +31,7 @@ class AdminController extends BaseController
             }
 
             //生成认证条件
-            $admin_info = M('admin')->where(['username' => $username])->find();
+            $admin_info = M('admin')->where(['name' => $username])->find();
             //使用用户名、密码和状态的方式进行认证
             if ($admin_info) {
                 if ($admin_info['status'] == 1) {
