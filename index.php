@@ -24,7 +24,7 @@ header('Access-Control-Allow-Headers:x-requested-with,content-type');
 if(version_compare(PHP_VERSION,'5.6.0','<'))  die('require PHP > 5.6.0 !');
 
 // 开启调试模式 建议开发阶段开启 部署阶段注释或者设为false
-define('APP_DEBUG', false);
+define('APP_DEBUG', true);
 
 //数据库开发环境
 define('APP_STATUS', 'prod');
