@@ -435,7 +435,7 @@ class UeditorController extends BaseController {
 				$host=(is_ssl() ? 'https' : 'http')."://".$_SERVER['HTTP_HOST'];
 
 				$upfile = $info['upfile'];
-                $url = CC('image_host') . trim(UPLOAD_PATH, '.') . $upfile['savename'];
+                $url = CC('image_host') . trim(UPLOAD_PATH, '.') . $config['cate'] . '/' . $upfile['savename'];
                 $data = [
                     "resource_id" => $upfile['savename'],
                     "img_url" => $url,
@@ -519,7 +519,7 @@ class UeditorController extends BaseController {
 //		$files = M('file')->field('id, path url')->where($where)->limit($start, $size)->select();
 		$where = [];
         $total = M('image')->where($where)->count();
-		$files = M('image')->field('id, img_url url')->where($where)->limit($start, $size)->select();
+		$files = M('image')->field('id, img_url url')->where($where)->limit($start, $size)->order('id desc')->select();
 		/* 返回数据 */
 		return json_encode(array(
 		    "state" => "SUCCESS",
