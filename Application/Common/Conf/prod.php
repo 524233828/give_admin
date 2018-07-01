@@ -15,7 +15,7 @@ return array(
     'URL_HTML_SUFFIX' => 'html',
 
     'DEFAULT_MODULE'        =>'Admin',  // 默认模块
-    'DEFAULT_CONTROLLER'    =>'Front', // 默认控制器名称
+    'DEFAULT_CONTROLLER'    =>'admin', // 默认控制器名称
     'DEFAULT_ACTION'        =>'login', // 默认操作名
     'MD5_KEY'               =>'qwtrytvxbuiytdn345', // md5加密秘钥
 
