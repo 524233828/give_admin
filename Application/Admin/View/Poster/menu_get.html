@@ -1,0 +1,360 @@
+﻿<!DOCTYPE HTML>
+<html>
+
+<head>
+  <include file="Base/_header" />
+  <title>菜单管理</title>
+</head>
+
+<body>
+  <nav class="breadcrumb "><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 基本设置 <span class="c-gray en">&gt;</span> 菜单管理 <a class="btn btn-success radius r mr-20" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+  <div class="pd-20 ">
+    <div class="text-c hide"> <span class="select-box inline">
+		<select name="" class="select">
+			<option value="0">全部分类</option>
+			<option value="1">分类一</option>
+			<option value="2">分类二</option>
+		</select>
+		</span> 日期范围：
+      <input type="text" onfocus="WdatePicker({maxDate:'#F{$dp.$D(\'logmax\')||\'%y-%M-%d\'}'})" id="logmin" class="input-text Wdate" style="width:120px;"> -
+      <input type="text" onfocus="WdatePicker({minDate:'#F{$dp.$D(\'logmin\')}',maxDate:'%y-%M-%d'})" id="logmax" class="input-text Wdate" style="width:120px;">
+      <input type="text" name="" id="" placeholder=" 菜单名称" style="width:250px" class="input-text">
+      <button name="" id="" class="btn btn-success" type="submit"><i class="Hui-iconfont">&#xe665;</i> 搜菜单</button>
+    </div>
+    <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a class="btn btn-primary radius" onclick="menu_add('添加菜单','<{:U('Admin/Menu/add')}>')" href="javascript:;"><i class="Hui-iconfont">&#xe600;</i> 添加菜单</a></span> <span class="r">共有数据：<strong>54</strong> 条</span> </div>
+    <div class="mt-20">
+      <div class="main cl">
+        <section class=" cl col-sm-3 hide">
+          <div class="weixin-box ">
+            <div class="header cl">
+              <div class="title f-l">漫娱</div>
+              <div class="title f-r">more</div>
+            </div>
+            <div class="content"></div>
+
+            <div class="footer  cl">
+              <div class="keyboard col-sm-2 f-l">键盘</div>
+              <ul class="menu pos-r col-sm-10 f-l">
+                <?php foreach ($menu_datas as $key => $value): //一级菜单    ?>
+                <li class="col-sm-4 pos-r">
+                  <span class="btn btn-block "><?php echo $value['name']; ?></span>
+                  <?php if (!empty($value['sub_button'])): //二级菜单  ?>
+                  <ul class="pos-a second" style="bottom:34px;left:0">
+                    <?php 
+							$sub_button = $value['sub_button'];
+							$num = count($value['sub_button']);
+							for($i=$num-1; $i >= 0 ; $i--){   ?>
+                    <li class="pos-r">
+                      <span class="btn "><?php echo $sub_button[$i]['name']; ?></span>
+                      <?php if (!empty($value['sub_button'])): //三级菜单 ?>
+                      <ul class="pos-a second" style="bottom:0;left:82px">
+                        <?php
+										$sub_button2 = $sub_button[$i]['sub_button'];
+										$num2 = count($sub_button[$i]['sub_button']);
+										for($j=$num2-1; $j >= 0 ; $j--){    ?>
+                          <li class="pos-r">
+                            <span class="btn "><?php echo $sub_button2[$j]['name']; ?></span>
+                          </li>
+                          <?php } ?>
+                      </ul>
+                      <?php endif ?>
+                    </li>
+                    <?php } ?>
+                  </ul>
+                  <?php endif ?>
+                </li>
+                <?php endforeach ?>
+              </ul>
+            </div>
+
+            <div class="footer edit hide  cl">
+              <div class="keyboard col-sm-2 f-l">键盘</div>
+              <ul class="menu pos-r col-sm-10 f-l">
+                <?php foreach ($menu_datas as $key => $value): //一级菜单    ?>
+                <li class="col-sm-4 pos-r">
+                  <span class="btn btn-block "><?php echo $value['name']; ?></span>
+                  <?php if (!empty($value['sub_button'])): //二级菜单  ?>
+                  <ul class="pos-a second" style="bottom:34px;left:0">
+                    <?php 
+							$sub_button = $value['sub_button'];
+							$num = count($value['sub_button']);
+							for($i=$num-1; $i >= 0 ; $i--){   ?>
+                    <li class="pos-r">
+                      <span class="btn "><?php echo $sub_button[$i]['name']; ?></span>
+                      <?php if (!empty($value['sub_button'])): //三级菜单 ?>
+                      <ul class="pos-a second" style="bottom:0;left:82px">
+                        <?php
+										$sub_button2 = $sub_button[$i]['sub_button'];
+										$num2 = count($sub_button[$i]['sub_button']);
+										for($j=$num2-1; $j >= 0 ; $j--){    ?>
+                          <li class="pos-r">
+                            <span class="btn "><?php echo $sub_button2[$j]['name']; ?></span>
+                          </li>
+                          <?php } ?>
+                      </ul>
+                      <?php endif ?>
+                    </li>
+                    <?php } ?>
+                  </ul>
+                  <?php endif ?>
+                </li>
+                <?php endforeach ?>
+              </ul>
+            </div>
+
+          </div>
+        </section>
+        <section class="col-sm-3 cl">
+          <iframe scrolling="yes" height="600px" width="100%" frameborder="0" src="<{:U('Admin/Imitate/index')}>"></iframe>
+        </section>
+
+
+        <div class="panel col-sm-9 panel-default f-l">
+          <div class="panel-header">主菜单</div>
+          <div class="panel-body">
+            <table class="table table-border table-bordered table-bg table-hover ">
+              <thead>
+                <tr class="text-c">
+                  <th width="40">
+                    <input name="" type="checkbox" value="">
+                  </th>
+                  <th width="50px">编号</th>
+                  <th width="280px">上级菜单</th>
+                  <th width="40px">类型</th>
+                  <th width="280px">菜单名称</th>
+                  <th width="280px">关键词</th>
+                  <th width="200px">外链url</th>
+                  <th width="100px">显示</th>
+                  <th width="50px">排序</th>
+                  <th width="200px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($menu as $key => $value): ?>
+                <tr class="text-c va-m">
+                  <td>
+                    <input name="" type="checkbox" value="">
+                  </td>
+                    <td><?php echo $value['id']; ?></td>
+                    <td><?php echo $value['pid']; ?></td>
+                    <td><?php echo $value['type']; ?></td>
+                    <td><?php echo $value['name']; ?></td>
+                    <td><?php echo $value['keyword']; ?></td>
+                    <td class="text-l" ><?php echo str_cut($value['url'],0,60); ?></td>
+                    <td><?php echo $value['is_show']?'显示':'不显示'; ?></td>
+                    <td><?php echo $value['orders']; ?></td>
+
+                    <td class="td-manage">
+                      <a style="text-decoration:none" onClick="menu_stop(this,<?php echo $value['id']; ?>)" href="javascript:;" title="下架"><i class="Hui-iconfont">&#xe6de;</i></a>
+                      <a style="text-decoration:none" class="ml-5" href="<{:U('Admin/menu/add',array('id'=>$value['id'] ))}>" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a> 
+                      <a style="text-decoration:none" class="ml-5" onClick="menu_del(this,<?php echo $value['id']; ?>)" href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>
+                    </td>
+                </tr>
+                <?php endforeach ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <section class="pl-20 pr-20 col-sm-9 hide">
+          <div class="panel col-sm-12 panel-default f-l">
+            <div class="panel-header">添加菜单</div>
+            <div class="panel-body">
+              <form action="" class="form form-horizontal">
+                <div class="row cl">
+                  <label for="first" class="form-label col-sm-2 text-r">上级菜单</label>
+                  <div class="formControls col-sm-8">
+                    <span class="select-box">
+								  <select class="select" size="1" name="demo1">
+								    <option value="" selected>主菜单</option>
+								    <option value="1">菜单一</option>
+								    <option value="2">菜单二</option>
+								    <option value="3">菜单三</option>
+								  </select>
+								</span>
+                  </div>
+                </div>
+                <div class="row cl">
+                  <label for="first" class="form-label col-sm-2 text-r">菜单名称</label>
+                  <div class="formControls col-sm-8">
+                    <input type="text" name="name" class="input-text ">
+                  </div>
+                </div>
+                <div class="row cl">
+                  <label for="first" class="form-label col-sm-2 text-r">关键词</label>
+                  <div class="formControls col-sm-8">
+                    <input type="text" name="keyword" class="input-text" placeholder="请用英文,系统根据关键词作回复">
+                  </div>
+                </div>
+                <div class="row cl">
+                  <label for="first" class="form-label col-sm-2 text-r">外链url</label>
+                  <div class="formControls col-sm-8">
+                    <input type="text" name="url" class="input-text" placeholder="" value="http://">
+                  </div>
+                </div>
+                <div class="row cl">
+                  <label for="first" class="form-label col-sm-2 text-r">是否显示</label>
+                  <div class="formControls col-sm-8">
+                  <span class="select-box">
+  								  <select class="select" size="1" name="demo1">
+  								    <option value="" selected>显示</option>
+  								    <option value="1">不显示</option>
+  								  </select>
+  								</span>
+                  </div>
+                </div>
+                <div class="row cl">
+                  <label for="first" class="form-label col-sm-2 text-r">排序</label>
+                  <div class="formControls col-sm-8">
+                    <input type="text" name="orders" class="input-text" placeholder="" value="">
+                  </div>
+                </div>
+                <div class="row cl text-c">
+                  <div class="col-2"></div>
+                  <div class="col-sm-8">
+                    <button class="btn-block btn btn-primary ">添加</button>
+                  </div>
+                  <div class="col-2"></div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <load href="__PUBLIC__/Admin/lib/jquery/1.9.1/jquery.min.js" />
+  <load href="__PUBLIC__/Admin/lib/layer/1.9.3/layer.js" />
+  <load href="__PUBLIC__/Admin/lib/icheck/jquery.icheck.min.js" />
+  <load href="__PUBLIC__/Admin/lib/My97DatePicker/WdatePicker.js" />
+  <load href="__PUBLIC__/Admin/lib/datatables/1.10.0/jquery.dataTables.min.js" />
+  <load href="__PUBLIC__/Admin/js/H-ui.js" />
+  <load href="__PUBLIC__/Admin/js/menu.js" />
+  <load href="__PUBLIC__/Admin/js/editable.js" />
+  <load href="__PUBLIC__/Admin/js/H-ui.admin.js" />
+  <script type="text/javascript">
+  $('.editable').editable();
+
+
+
+  $('.table-sort').dataTable({
+    "aaSorting": [
+      [1, "desc"]
+    ], //默认第几个排序
+    "bStateSave": true, //状态保存
+    "aoColumnDefs": [
+      //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+      {
+        "orderable": false,
+        "aTargets": [0, 8]
+      } // 制定列不参与排序
+    ]
+  });
+
+  /*菜单-添加*/
+  function menu_add(title, url, w, h) {
+    var index = layer.open({
+      type: 2,
+      title: title,
+      content: url
+    });
+    layer.full(index);
+  }
+  /*菜单-编辑*/
+  function menu_edit(title, url, id, w, h) {
+    var index = layer.open({
+      type: 2,
+      title: title,
+      content: url
+    });
+    layer.full(index);
+  }
+  /*菜单-删除*/
+  function menu_del(obj, id) {
+    layer.confirm('确认要删除吗？', function(index) {
+      $.ajax({
+        url: 'Admin/Index/del_action',
+        type: 'post',
+        dataType: 'json',
+        data: {
+          id: id,
+          type: 'menu'
+        },
+      })
+      .done(function(res) {
+        if (res.code=='0001') {
+          $(obj).parents("tr").remove();
+          layer.msg('已删除!', 1);
+        };
+      })
+
+      
+    });
+  }
+  /*菜单-审核*/
+  function menu_shenhe(obj, id) {
+    layer.confirm('审核文章？', {
+        btn: ['通过', '不通过'],
+        shade: false
+      },
+      function() {
+        $(obj).parents("tr").find(".td-manage").prepend('<a class="c-primary" onClick="menu_start(this,id)" href="javascript:;" title="申请上线">申请上线</a>');
+        $(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">已发布</span>');
+        $(obj).remove();
+        layer.msg('已发布', {
+          icon: 6,
+          time: 1000
+        });
+      },
+      function() {
+        $(obj).parents("tr").find(".td-manage").prepend('<a class="c-primary" onClick="menu_shenqing(this,id)" href="javascript:;" title="申请上线">申请上线</a>');
+        $(obj).parents("tr").find(".td-status").html('<span class="label label-danger radius">未通过</span>');
+        $(obj).remove();
+        layer.msg('未通过', {
+          icon: 5,
+          time: 1000
+        });
+      });
+  }
+  /*菜单-下架*/
+  function menu_stop(obj, id) {
+    layer.confirm('确认要下架吗？', function(index) {
+      $(obj).parents("tr").find(".td-manage").prepend('<a style="text-decoration:none" onClick="menu_start(this,id)" href="javascript:;" title="发布"><i class="Hui-iconfont">&#xe603;</i></a>');
+      $(obj).parents("tr").find(".td-status").html('<span class="label label-defaunt radius">已下架</span>');
+      $(obj).remove();
+      layer.msg('已下架!', {
+        icon: 5,
+        time: 1000
+      });
+    });
+  }
+
+  /*菜单-发布*/
+  function menu_start(obj, id) {
+    layer.confirm('确认要发布吗？', function(index) {
+      $(obj).parents("tr").find(".td-manage").prepend('<a style="text-decoration:none" onClick="menu_stop(this,id)" href="javascript:;" title="下架"><i class="Hui-iconfont">&#xe6de;</i></a>');
+      $(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">已发布</span>');
+      $(obj).remove();
+      layer.msg('已发布!', {
+        icon: 6,
+        time: 1000
+      });
+    });
+  }
+  /*菜单-申请上线*/
+  function menu_shenqing(obj, id) {
+    $(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">待审核</span>');
+    $(obj).parents("tr").find(".td-manage").html("");
+    layer.msg('已提交申请，耐心等待审核!', {
+      icon: 1,
+      time: 2000
+    });
+  }
+  $('.checkbox').iCheck({
+    checkboxClass: 'icheckbox-blue',
+    radioClass: 'iradio-blue',
+    increaseArea: '20%'
+  });
+  </script>
+</body>
+
+</html>

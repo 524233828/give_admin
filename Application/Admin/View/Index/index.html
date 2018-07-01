@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <include file="Base/_header" />
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <title>后台管理</title>
+</head>
+
+<body>
+  <include file="Base/_nav" />  
+  <include file="Base/_aside" />  
+  
+  <div class="dislpayArrow">
+    <a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a>
+  </div>
+  <section class="Hui-article-box">
+    <div id="Hui-tabNav" class="Hui-tabNav">
+      <div class="Hui-tabNav-wp">
+        <ul id="min_title_list" class="acrossTab cl">
+          <li class="active"><span title="我的桌面" data-href="welcome.html">我的桌面</span><em></em></li>
+        </ul>
+      </div>
+      <div class="Hui-tabNav-more btn-group"><a id="js-tabNav-prev" class="btn radius btn-default size-S" href="javascript:;"><i class="Hui-iconfont">&#xe6d4;</i></a><a id="js-tabNav-next" class="btn radius btn-default size-S" href="javascript:;"><i class="Hui-iconfont">&#xe6d7;</i></a></div>
+    </div>
+    <div id="iframe_box" class="Hui-article">
+      <div class="show_iframe">
+        <div style="display:none" class="loading"></div>
+        <iframe scrolling="yes"  frameborder="0" src="{:U('Admin/Index/welcome')}"></iframe>
+      </div>
+    </div>
+  </section>
+  <!--<section class="imitate_win" >-->
+    <!--<a class="back c-white" onClick="window.history.go(-1)" >后退</a>-->
+    <!--<a class="canle_drag c-white"><span>取消</span><span class="hide">开启</span>拖动</a>-->
+    <!--<div class="imitate_move"></div>-->
+    <!--<iframe scrolling="yes" class="win" frameborder="" src="{:U('Admin/Imitate/index')}"></iframe>-->
+  <!--</section>-->
+
+  <include file="Base/_footer" />
+
+  <script type="text/javascript">
+
+     // //可拖拽
+     // $('.imitate_win').draggable({handle:".imitate_move"});
+     // $('.canle_drag').on('click', function(event) {
+     //   event.preventDefault();
+     //   $('.imitate_move').toggleClass('hide');
+     //   $(this).children('span').toggleClass('hide');
+     //
+     // });
+
+    
+    $('.open_win').on('click', function(event) {
+      event.preventDefault();
+      $(this).children('span').toggleClass('hide');
+      $('.imitate_win').toggleClass('hide');
+    });
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,19 @@
+  <aside class="Hui-aside">
+    <input runat="server" id="divScrollValue" type="hidden" value="" />
+    <div class="menu_dropdown bk_2">
+      <?php foreach ($menus as $menu): ?>
+        <dl id="menu-article">
+          <dt><i class="Hui-iconfont">&#xe616;</i>{$menu.name}<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+          <dd>
+            <ul>
+              <?php if (isset($menu['son'])): ?>
+                <?php foreach ($menu['son'] as $child_menu): ?>
+                  <li><a _href="{:U('admin/' . $child_menu['m'] . '/' . $child_menu['a'], option_arr($child_menu['params'], 'list'))}" href="javascript:void(0)">{$child_menu.name}</a></li>
+                <?php endforeach ?>
+              <?php endif ?>
+            </ul>
+          </dd>
+        </dl>
+      <?php endforeach ?>
+    </div>
+  </aside>

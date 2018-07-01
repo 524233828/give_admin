@@ -1,0 +1,256 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+	<include file="Base/_header" />
+	<title>列表</title>
+</head>
+<body>
+<div class="pd-10">
+	<div class="text-c">
+        <form method="post" submit-url="{:U('')}" class="pull-right mail-search m-b-sm">
+			<span class="select-box inline">
+				<select name="" class="select">
+					<option value="0">全部分类</option>
+					<option value="1">分类一</option>
+					<option value="2">分类二</option>
+				</select>
+			</span>
+			<span>从</span>
+			<input type="text" value="{$begin_time}" onfocus="WdatePicker()" id="logmin" class="input-text Wdate" style="width:120px;">
+			<span>到</span>
+			<input type="text" value="{$end_time}" onfocus="WdatePicker()" id="logmax" class="input-text Wdate" style="width:120px;">
+        	<?php $search_k = I('search_k'); ?>
+        	<?php $search_v = I('search_v'); ?>
+        	<?php if ($search_k): ?>
+	            <?php foreach ($search_k as $key => $value): ?>
+					<input type="text" value="<?php echo $search_v[$key] ?>" name="search_v[]" id="" placeholder="" onkeydown="listenEnter(this)" style="width:200px" class="input-text">
+		            <input class="txt left" type="hidden" name="search_k[]" value="<?php echo trim($value); ?>" />
+	            <?php endforeach ?> 
+        	<?php else: ?>
+	            <?php foreach ($search_list as $key => $value): ?>
+					<input type="text" value="" name="search_v[]" id="" placeholder="搜索<?php echo trim($value[0]); ?>" onkeydown="listenEnter(this)" style="width:200px" class="input-text">
+		            <input class="txt left" type="hidden" name="search_k[]" value="<?php echo trim($value[1]); ?>" />
+	            <?php endforeach ?>        		
+        	<?php endif ?>
+        	
+
+			<button name="" id="" class="btn btn-success" type="submit"><i class="Hui-iconfont">&#xe665;</i>搜索</button>
+		</form>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20">
+		<a class="btn btn-primary" onclick="follow_edit(this, '添关注回复')" link-url="{:U('Common/edit')}" href="javascript:;"><i class="Hui-iconfont">&#xe600;</i> 添加</a>
+	</div>
+	<div class="mt-20">
+		<table class="table table-border table-bordered table-hover table-bg table-sort">
+			<thead>
+				<tr class="text-c">
+					<th width="25"><input type="checkbox" name="checkbox_dels" value=""></th>
+					<th class="text-center">ID</th>
+					<?php foreach ($attributes as $key => $value): ?>
+					<th class="text-center" width="<?php echo $value['list_width']; ?>" ><?php echo $value['title']; ?></th>
+					<?php endforeach ?>
+					<th class="text-center">操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ($list as $key => $value): ?>
+				<tr>
+					<td><input type="checkbox" value="1" name="checkbox_del"></td>
+					<td><?php echo $value['id']; ?></td>
+					<?php foreach ($attributes as $k => $v): ?>
+					<?php switch ($v['type']) {
+								case 'img':?>
+					<td class="pos-r">
+						<div class="t-c pos-a t-0 l-0 full showImg" style="background: url(<?php echo $value[$v['name']]; ?>) center center no-repeat;background-size:contain;height: 40px;" src="<?php echo $value[$v['name']]; ?>" ></div>
+					</td>
+					<?php break;
+								case 'imgs':?>
+					<td class="pos-r">
+						<div class="t-c pos-a t-0 l-0 full showImgs" style="background: url(<?php echo $value[$v['name']][0]; ?>) center center no-repeat;background-size:contain;height: 40px;" src="<?php echo implode(',', $value[$v['name']]); ?>" ></div>
+					</td>
+					<?php break;
+								case 'lstring':?>
+					<td class="t-l">
+						<?php echo $value[$v['name']]; ?>
+					</td>
+					<?php break;
+								case 'textarea':?>
+					<td class="t-l">
+						<div class="list-textarea" title="<?php echo $value[$v['name']]; ?>"><?php echo $value[$v['name']]; ?></div>
+					</td>
+
+					<?php break;
+								case 'link':?>
+					<td>
+						<a href="<?php echo $value[$v['name']]; ?>" title="<?php echo $value[$v['name']]; ?>" target="blank" >点击查看</a>
+					</td>
+					<?php break;
+								case 'time':
+								case 'ctime':?>
+					<td class="pos-r">
+						<?php echo date('Y-m-d H:i', $value[$v['name']]); ?>
+					</td>
+					<?php break;
+								case 'bool':?>
+					<td>
+						<?php if ($value[$v['name']]): ?>
+						<span class="text-navy" onclick="isIndex(this,'17',2)">是</span>
+						<?php else: ?>
+						<span class="text-danger" onclick="isIndex(this,'17',2)">否</span>
+						<?php endif ?>
+					</td>
+					<?php break;
+								case 'select':?>
+					<td><?php
+									$options = option_arr($v['extra'],'list');
+									echo $options[ $value[$v['name']] ]; ?></td>
+
+					<?php break;
+								case 'value':?>
+					<td><?php echo $value[$v['name']]; ?></td>
+					<?php break;
+								case 'fkey':?>
+					<td class="pos-r fkey" data-fkey="<?php echo $v['name']; ?>" data-fvalue="<?php echo $value[$v['name']]; ?>" data-table="<?php echo $table; ?>" >
+						<div class="hand"><a href="javascript:;"  ><?php echo $value[$v['name']]; ?></a></div>
+					</td>
+					<?php break;
+								default:?>
+					<td class="t-c"><?php echo $value[$v['name']]; ?></td>
+					<?php  break;
+						  } ?>
+					<?php endforeach ?>
+
+					<td class="td-status">
+						<a title="修改" href="javascript:;" onclick="follow_edit(this, '修改');" link-url="{:U('Common/edit',['table'=>$table, id=>$value['id'], 'p'=>I('get.p')])}" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
+						<a title="删除" href="javascript:follow_del(this, '<?php echo $table; ?>', '<?php echo $value['id']; ?>')" class="ml-5" style="text-decoration:none" ><i class="Hui-iconfont"></i></a>
+					</td>
+				</tr>
+				<?php endforeach ?>
+				<tr class="hide">
+					<td class="td-status ">
+						<span class="label <?php echo $value['is_on']==1?'label-success':'label-default'; ?> radius"><?php echo $value['is_on']?'已启用':'未启用'; ?></span>
+					</td>
+					<td class="td-manage">
+						<?php if ($value['is_on']==1){ ?>
+							<a style="text-decoration:none" onClick="follow_stop(this,'<?php echo $value['id'];?>')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a>
+						<?php }else{ ?>
+							<a style="text-decoration:none" onClick="follow_start(this,'<?php echo $value['id'];?>')" href="javascript:;" title="启用"><i class="Hui-iconfont">&#xe615;</i></a>
+						<?php } ?>
+						<a style="text-decoration:none" class="ml-5" onclick="follow_del(this, '<?php echo $table; ?>', '<?php echo $value['id'];?>')" href="javascript:;" title="删除"><i class="Hui-iconfont"></i></a>						 </td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="cl pd-5 bg-1 bk-gray mt-20">
+			<div class="cl f-l">
+				<a href="javascript:;" onclick="dataDel()" class="btn btn-danger inline"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
+			</div>
+			<div class="cl f-r page">
+				{$page}
+			</div>
+		</div>
+	</div>
+</div>
+<include file="Base/_footer" />
+<script type="text/javascript">
+
+/*关注回复-添加*/
+function follow_add(title, url, w, h){
+	var index = layer.open({
+		type: 2,
+		title: title,
+		content: url
+	});
+	layer.full(index);
+}
+/*关注回复-编辑*/
+function follow_edit(obj, title){
+	var index = layer.open({
+		type: 2,
+		title: title,
+		content: $(obj).attr('link-url')
+	});
+	layer.full(index);
+}
+/*关注回复-删除*/
+function follow_del(obj, table, id){
+	layer.confirm('确认要删除吗？',function(index){
+		$.ajax({
+			url: "{:U('common/delete')}",
+			type: 'post',
+			dataType: 'json',
+			data: {
+				id: id,
+				table: table,
+			},
+		})
+		.done(function(res) {
+			if (res.status == 1) {
+				$(obj).parents("tr").remove();
+				layer.msg('已删除!');
+			};
+		})
+
+	});
+}
+/*关注回复-审核*/
+function follow_shenhe(obj,id){
+	layer.confirm('审核文章？', {
+		btn: ['通过','不通过'], 
+		shade: false
+	},
+	function(){
+		$(obj).parents("tr").find(".td-manage").prepend('<a class="c-primary" onClick="follow_start(this,id)" href="javascript:;" title="申请上线">申请上线</a>');
+		$(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">已发布</span>');
+		$(obj).remove();
+		layer.msg('已发布', {icon:6,time:1000});
+	},
+	function(){
+		$(obj).parents("tr").find(".td-manage").prepend('<a class="c-primary" onClick="follow_shenqing(this,id)" href="javascript:;" title="申请上线">申请上线</a>');
+		$(obj).parents("tr").find(".td-status").html('<span class="label label-danger radius">未通过</span>');
+		$(obj).remove();
+    	layer.msg('未通过', {icon:5,time:1000});
+	});	
+}
+
+/*关注回复-申请上线*/
+function follow_shenqing(obj,id){
+	$(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">待审核</span>');
+	$(obj).parents("tr").find(".td-manage").html("");
+	layer.msg('已提交申请，耐心等待审核!', {icon: 1,time:2000});
+}
+
+/*管理员-停用*/
+function follow_stop(obj,id){
+	layer.confirm('确认要停用吗？',function(index){
+		//此处请求后台程序，下方是成功后的前台处理……
+		
+		$(obj).parents("tr").find(".td-manage").prepend('<a onClick="follow_start(this,id)" href="javascript:;" title="启用" style="text-decoration:none"><i class="Hui-iconfont">&#xe615;</i></a>');
+		$(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">已启用</span>');
+		$(obj).remove();
+		layer.msg('已启用',{icon: 5,time:1000});
+	});
+}
+
+/*管理员-启用*/
+function follow_start(obj,id){
+	layer.confirm('确认要启用吗？',function(index){
+		//此处请求后台程序，下方是成功后的前台处理……
+		
+		
+		$(obj).parents("tr").find(".td-manage").prepend('<a onClick="follow_stop(this,id)" href="javascript:;" title="停用" style="text-decoration:none"><i class="Hui-iconfont">&#xe631;</i></a>');
+		$(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">未启用</span>');
+		$(obj).remove();
+		layer.msg('已停用!', {icon: 6,time:1000});
+	});
+}
+
+/*监听enter键*/
+function listenEnter (that) {
+  if (event.keyCode==13) {
+    event.preventDefault()
+    $(that).parents('form').find('button').trigger('click');
+  };
+}
+</script> 
+</body>
+</html>

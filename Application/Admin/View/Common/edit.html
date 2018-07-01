@@ -1,0 +1,264 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<include file="Base/_header" />
+	<load href="__PUBLIC__/Admin/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" stylesheet="text/css" />
+	<title>详情</title>
+</head>
+<body>
+<div class="pd-10" >
+    <form class="form form-horizontal" submit-url="{:U('')}" method="POST">
+        <input type="hidden" name="p" value="<?php echo I('get.p'); ?>" >
+        <input type="hidden" name="table" value="<?php echo I('table'); ?>" >
+        <input type="hidden" name="id" value="<?php echo I('id'); ?>" >
+        <?php foreach ($attributes as $key => $value) : ?>
+
+			<?php if (in_array(intval($value['is_show']), [0, 1, 4, 5])) : ?>
+				continue;
+			<?php elseif (I('id') && in_array(intval($value['is_show']), [0, 1, 2, 3])) : ?>
+				continue;
+			<?php endif ?>
+			<div class="row cl">
+                <label class="form-label col-3">
+                    <span class="c-red"><?php echo $value['is_must'] ? '*' : '&nbsp;'; ?></span>
+                    <span><?php echo $value['title']; ?></span>：
+                </label>
+            	<?php
+				switch ($value['type']) { //link:链接 string:文字 number:数字 select:单选 bool:二选一 checkbox:多选 textarea:文字域 img:图片 file:文件 editor:编辑器 time:时间 ctime:添加时间 
+					case 'string':
+					case 'lstring':
+					case 'link':
+					case 'number':
+                ?>
+                <div class="formControls col-8">
+                    <input class="input-text" <?php echo $value['is_must']?'required':''; ?> data-msg-required="<?php echo $value['remark']; ?>" type="<?php echo $value['type']=='number'?'number':'text'; ?>" name="<?php echo $value['name']; ?>" value="<?php echo $data[$value['name']]? : $value['default']; ?>">
+                </div>
+
+                <?php 
+                    	break;
+                    case 'bool':
+                    case 'select':
+						if ($value['extra']) {
+							$options = option_arr($value['extra']);
+							$value['options'] = $options;
+			            }
+			    ?>
+                <div class="formControls col-8">
+					<select name="<?php echo $value['name']; ?>" class="input-text" >
+						<?php foreach ($value['options'] as $k => $v): ?>
+							<option value="<?php echo $v[0]; ?>" <?php echo $data[$value['name']]==$v[0]? 'selected': ''; ?> ><?php echo $v[1]; ?></option>
+						<?php endforeach ?>
+					</select>
+                </div>
+                <?php
+                    	break;
+                    case 'textarea':
+                ?>
+                <div class="formControls col-8">
+                    <textarea class="input-text textarea" type="<?php echo $value['type']=='number'?'number':'text'; ?>" name="<?php echo $value['name']; ?>" ><?php echo $data[$value['name']]? : $value['default']; ?></textarea>
+                </div>
+                <?php
+                    	break;
+                    case 'img': 
+                ?>
+                <div class="formControls col-8 pos-r">
+                    <input class="input-text" type="text" name="<?php echo $value['name']; ?>" value="<?php echo $data[$value['name']]? : $value['default']; ?>">
+                    <a href="javascript:void(0);" class="btn btn-primary" onclick="upImage(this);">上传图片</a>
+                </div>
+                <?php
+                    	break;
+                    case 'imgs':
+                ?>
+                <div class="formControls col-8 pos-r">
+                    <input class="input-text" type="text" readonly="readonly" name="<?php echo $value['name']; ?>" value="<?php echo $data[$value['name']]? : $value['default']; ?>">
+                    <a href="javascript:void(0);" class="btn btn-primary" onclick="upImage(this);">上传图片</a>
+                </div>
+                <?php
+                    	break;
+                    case 'file':
+                ?>
+                <div class="formControls col-8">
+                    <input class="input-text" type="text" name="<?php echo $value['name']; ?>" value="<?php echo $data[$value['name']]? : $value['default']; ?>" readonly>
+                    <a href="javascript:void(0);" class="btn btn-primary" onclick="upFiles(this);">上传文件</a>
+                </div>
+                <?php
+                    	break;
+                    case 'editor':
+                ?>
+                <div class="formControls col-8"><script type="text/javascript" id="editor" name="<?php echo $value['name']; ?>"  style="width:810px;height:500px;"><?php echo $data[$value['name']]? : $value['default']; ?></script></div>
+                <?php
+                    	break;
+                    case 'time': 
+                    case 'ctime':
+                ?>
+                <div class="formControls col-8">
+                    <input class="input-text flatpickr" data-enable-time="true" data-time_24hr="true" type="text" name="<?php echo $value['name']; ?>" value="<?php echo $data[$value['name']]? date('Y-m-d H:i',$data[$value['name']]): $value['default']; ?>">
+                </div>
+                <?php
+                		break;
+                    default:
+                ?>
+
+                <?php
+                    	break;
+			    }
+			    ?>
+                <span class="c-red"><?php echo $value['remark']; ?></span>
+            </div>
+            <?php endforeach ?>
+            <div class="row cl">
+                <div class="col-8 col-offset-3">
+                    <button class="btn btn-primary" type="submit" ><i class="Hui-iconfont">&#xe632;</i> 保存 </button>
+                    <button onClick="layer_close();" type="reset" class="btn btn-default"> 重置 </button>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+    </form>
+<script type="text/plain" name="ddd" class="hide" id="upload"></script>
+</div>
+<include file="Base/_footer" />
+<load href="__PUBLIC__/Admin/lib/icheck/jquery.icheck.min.js" /> 
+<load href="__PUBLIC__/Admin/lib/Validform/5.3.2/Validform.min.js" /> 
+<load href="__PUBLIC__/Admin/lib/ueditor/1.4.3/ueditor.config.js" /> 
+<load href="__PUBLIC__/Admin/lib/ueditor/1.4.3/ueditor.all.min.js" />
+<load href="__PUBLIC__/Admin/lib/ueditor/1.4.3/lang/zh-cn/zh-cn.js" /> 
+<script type="text/javascript">
+$(function(){
+	$('.skin-minimal input').iCheck({
+		checkboxClass: 'icheckbox-blue',
+		radioClass: 'iradio-blue',
+		increaseArea: '20%'
+	});
+
+	if ($('#editor').attr('name')) {
+		var ue = UE.getEditor('editor');
+	}
+});
+
+$('#checkbox-pinglun').click(function(event) {
+	if( $(this).attr('num')=='1' ){
+		$('.content').removeClass('hide');
+		$('.url').addClass('hide');
+		$(this).attr('num','0');
+		$(this).val(0);
+	}else{
+		$('.content').addClass('hide');
+		$('.url').removeClass('hide');
+		$(this).attr('num','1');		
+		$(this).val(1);
+	}
+});
+
+	
+if ( $('.check-box').attr('check')=='1'  ) {
+	$('#checkbox-pinglun').trigger('click');
+	
+};
+
+
+
+
+
+
+//重新实例化一个编辑器，防止在上面的editor编辑器中显示上传的图片或者文件
+var _editor = UE.getEditor('upload');
+var uploadBtn = null;
+_editor.ready(function() {
+    //隐藏编辑器，因为不会用到这个编辑器实例，所以要隐藏
+    _editor.hide();
+    //侦听图片上传
+    _editor.addListener('beforeInsertImage', function(editor, arg) {
+
+            //将地址赋值给相应的input
+            changeImgInput(arg);
+
+        })
+        //侦听文件上传，取上传文件列表中第一个上传的文件的路径
+    _editor.addListener('afterUpfiles', function(t, arg) {
+        changeFileInput(arg);
+    })
+});
+//弹出图片上传的对话框
+function upImage(that) {
+    uploadBtn = that;
+    _editor.setContent('');
+    var myImage = _editor.getDialog("insertimage");
+    myImage.open();
+}
+//弹出文件上传的对话框
+function upFiles(that) {
+    uploadBtn = that;
+    _editor.setContent('');
+    var myFiles = _editor.getDialog("attachment");
+    myFiles.open();
+}
+
+var imgUpdate = 0;
+function changeImgInput(arg) {
+	console.log(arg)
+	imgUpdate = 1;
+	var imgs = '';
+	for (var i = 0; i < arg.length; i++) {
+		imgs += arg[i].src + ','
+	};
+	imgs = imgs.substring(0,imgs.length-1);
+
+  $(uploadBtn).siblings("input").val(imgs);
+}
+
+function changeFileInput(arg) {
+    var con = '';
+    for (var i = 0; i < arg.length; i++) {
+        con += arg[i].url + ',';
+    };
+    con = con.substring(0, con.length - 1);
+    $(uploadBtn).siblings('input').val(con);
+}
+
+function getContentTxt() {
+    alert(_editor.getContentTxt());
+}
+
+
+$('input[readonly=readonly]').hover(function (argument) {
+	$tempImgs = $(this).parent().children('.tempImgs');
+
+	if($tempImgs.length<=0 || imgUpdate == 1 ){
+		that = this;
+		var ids = $(this).val().split(',')
+    $('<div>').addClass('tempImgs').appendTo( $(that).parent() )
+
+		for (var i = 0; i < ids.length; i++) {
+			$.ajax({
+				url: 'index.php?m=Admin&c=Ueditor&a=imgUrl',
+				type: 'post',
+				dataType: 'text',
+				data: {id: ids[i]},
+			})
+			.done(function(data) {
+	    	$('<img>').attr({
+	    		'src': data,
+	    	}).appendTo( $(that).parent().children('.tempImgs') );
+	    	imgUpdate = 0;
+			})
+
+		};
+
+	}else{
+    	$tempImgs.removeClass("hide");
+	}
+},function (argument) {
+	$tempImgs = $(this).parent().children('.tempImgs');
+	$tempImgs.addClass("hide");
+
+})
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{
+    "repositories": [
+
+    ],
+    "require": {
+        "endroid/qrcode": "^2.5"
+    }
+}

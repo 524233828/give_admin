@@ -1,0 +1,263 @@
+<style type="text/css">
+  tr td input{
+    text-align: center;
+    width: 100%;
+  }
+  tr td{
+    text-align: center;
+  }
+  .textarea{
+    line-height:20px;display: -webkit-box;
+    -webkit-line-clamp:1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .foreign_key{
+    background :#fefefe;
+    width: 200px;
+    top: 0;
+    right: 0;
+    margin-right: -200px;
+    font-size: 18px;
+    border: 1px solid #ccc; 
+    z-index: 10;
+    padding: 6px;
+  }
+  .foreign_key .portrait{
+    width: 80px;
+    height: 80px;
+    background: #666;
+    border-radius: 50%; 
+  }
+.tempImgs,
+.tempImg{
+  max-width: 500px;
+  width:auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 999;
+}
+.tempImgs{
+  max-width: auto;
+  float: left;
+}
+
+.modal-preview {
+    background: #fff;
+    height: 300px;
+    left: 50%;
+    top: 50%;
+    margin-left: -188px;
+    margin-top: -280px;
+    padding: 30px;
+    border-radius: 3px;
+    position: absolute;
+}
+</style>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox-title">
+                <h5><?php echo $head_title?:'列表'; ?></h5>
+            </div>
+            <div class="ibox-content">
+                <a class="btn btn-primary btn-sm" type="button" link-url="<?php echo U('Common/edit', array('table'=>$table)) ?>" ><i class="fa fa-plus-cubes"></i>新增<?php echo $head_title; ?></a>
+                <?php foreach ($search_list as $key => $value): ?>
+                    <form method="post" submit-url="{:U('')}" class="pull-right mail-search m-b-sm">
+                        <div class="input-group">
+                            <input type="text" class="form-control" value="<?php echo (I('search_k')==trim($value['1']))?I('search_v'):''; ?>" name="search_v" placeholder="搜索<?php echo trim($value[0]); ?>" onkeydown="listenEnter(this)" >
+                            <input class="txt left" type="hidden" name="search_k" value="<?php echo trim($value[1]); ?>" />
+                            <div class="input-group-btn">
+                                <button class="btn btn-md btn-primary" type="button" data-form-action="App.search_form">搜索</button>
+                            </div>
+                        </div>
+                    </form>
+                <?php endforeach ?>
+
+                <div class="clearfix"></div>
+                <form submit-url="{:U('')}" method="post">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                          <th class="text-center">ID</th>
+                          <?php foreach ($attributes as $key => $value): ?>
+                              <th class="text-center" width="<?php echo $value['list_width']; ?>" ><?php echo $value['title']; ?></th>
+                          <?php endforeach ?>
+                          <th class="text-center">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($list as $key => $value): ?>
+                        <tr>
+                        <td><?php echo $value['id']; ?></td>
+                        <?php foreach ($attributes as $k => $v): ?>
+                          <?php switch ($v['type']) {
+                                case 'img':?>
+                                  <td class="pos-r">
+                                    <div class="t-c pos-a t-0 l-0 full showImg" style="background: url(<?php echo $value[$v['name']]; ?>) center center no-repeat;background-size:contain;height: 40px;" src="<?php echo $value[$v['name']]; ?>" ></div>
+                                  </td>
+                            <?php break;
+                                case 'imgs':?>
+                                  <td class="pos-r">
+                                    <div class="t-c pos-a t-0 l-0 full showImgs" style="background: url(<?php echo $value[$v['name']][0]; ?>) center center no-repeat;background-size:contain;height: 40px;" src="<?php echo implode(',', $value[$v['name']]); ?>" ></div>
+                                  </td>
+                            <?php break;
+                                case 'lstring':?>
+                                  <td class="t-l">
+                                    <?php echo $value[$v['name']]; ?>
+                                  </td>
+                            <?php break;
+                                case 'textarea':?>
+                                  <td class="t-l">
+                                    <div class="textarea" title="<?php echo $value[$v['name']]; ?>"><?php echo $value[$v['name']]; ?></div>
+                                  </td>
+
+                            <?php break;
+                                case 'link':?>
+                                  <td>
+                                    <a href="<?php echo $value[$v['name']]; ?>" title="<?php echo $value[$v['name']]; ?>" target="blank" >点击查看</a>
+                                  </td>
+                            <?php break;
+                                case 'time':
+                                case 'ctime':?>
+                                  <td class="pos-r">
+                                  <?php echo date('Y-m-d H:i', $value[$v['name']]); ?>
+                                  </td>
+                            <?php break;
+                                case 'bool':?>
+                                  <td>
+                                    <?php if ($value[$v['name']]): ?>
+                                        <span class="text-navy" onclick="isIndex(this,'17',2)">是</span>
+                                    <?php else: ?>
+                                        <span class="text-danger" onclick="isIndex(this,'17',2)">否</span>
+                                    <?php endif ?>
+                                  </td>
+                            <?php break;
+                                case 'select':?>
+                                  <td><?php
+                                    $options = option_arr($v['extra'],'list');
+                                    echo $options[ $value[$v['name']] ]; ?></td>
+
+                            <?php break;
+                                case 'value':?>
+                                  <td><?php echo $value[$v['name']]; ?></td>
+                            <?php break;
+                                case 'fkey':?>
+                                  <td class="pos-r fkey" data-fkey="<?php echo $v['name']; ?>" data-fvalue="<?php echo $value[$v['name']]; ?>" data-table="<?php echo $table; ?>" >
+                                    <div class="hand"><a href="javascript:;"  ><?php echo $value[$v['name']]; ?></a></div>
+                                  </td>
+                            <?php break;
+                                default:?>
+                                  <td class="t-c"><?php echo $value[$v['name']]; ?></td>
+                                <?php  break;
+                          } ?>
+                        <?php endforeach ?>
+
+                        <td class="norightborder">
+                            <div class="btn-group">
+                                <a link-url="{:U('Common/edit',array('table'=>$table, id=>$value['id'], 'p'=>I('get.p')))}"><button class="btn btn-white btn-sm" type="button"><i class="fa fa-edit">编辑</i></button></a>
+                                <!-- <a href="javascript:void(0)" data-url="/index.php?m=Admin&amp;c=ask&amp;a=delete" data-id="58351" data-action="App.del"><button class="btn btn-white btn-sm" type="button"><i class="fa fa-trash-o"></i> 下线</button></a> -->
+                                <a href="javascript:confirmDelete('<?php echo $table; ?>','<?php echo $value['id']; ?>')"  ><button class="btn btn-white btn-sm" type="button"><i class="fa fa-trash-o"></i>删除</button></a>
+                            </div>
+
+                        </td>
+                    </tr>
+                    <?php endforeach ?>
+                    </tbody>
+                </table>
+
+                <div class="pull-right pagination m-t-no">
+                    {$page|str_replace='href','href="javascript:void(0)" link-url',###}
+                </div>
+                <div class="clearfix"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+// $('.fkey').hover(function() {
+//   $(this).parent().siblings().children('.fkey').children(".foreign_key").addClass("hide");
+//   if ($(this).children(".foreign_key").html()) {
+//     $(this).children(".foreign_key").removeClass('hide');
+//     return false;
+//   }
+
+//   var that = this;
+//   $.ajax({
+//     url: "<?php echo U('Home/getForeignKey'); ?>",
+//     type: 'post',
+//     dataType: 'json',
+//     data: {
+//       table: $(this).attr("data-table"),
+//       fkey: $(this).attr("data-fkey"),
+//       fvalue: $(this).attr("data-fvalue"),
+//     },
+//   })
+//   .done(function(res) {
+
+//     if (res.code=='0001') {
+
+//         $(that).append(res.data.text);
+
+//     }else{
+
+//     }
+//   });
+  
+// }, function() {
+
+
+// });
+
+
+/**
+ * 监听enter键
+ */
+function listenEnter (that) {
+  if (event.keyCode==13) {
+    event.preventDefault()
+    $(that).parents('form').find('button').trigger('click');
+  };
+}
+
+//显示大图
+$('.showImg').on('mouseover', function(event) {
+  var $tempImg = $(this).parent().children('.tempImg')
+  if($tempImg.attr('src')){
+    $tempImg.removeClass('hide')
+  }else{
+    $('<img>').addClass('tempImg').attr('src', $(this).attr('src')).appendTo( $(this).parent() )
+    $('.tempImg').on('mouseout', function(event) {
+      $(this).addClass('hide');
+    });
+  }
+  
+});
+
+//显示多个大图
+$('.showImgs').on('mouseover', function(event) {
+  var $tempImg = $(this).parent().children('.tempImg')
+  if($tempImg.attr('src')){
+    $tempImg.removeClass('hide')
+  }else{
+    var imgs = $(this).attr('src');
+    imgs = imgs.split(',');
+    $tempImgs = $('<div>').addClass('tempImgs')
+    for (var i = 0; i < imgs.length; i++) {
+      $('<img>').attr('src', imgs[i]).appendTo( $tempImgs )
+    };
+    $tempImgs.appendTo( $(this).parent() );
+
+    $('.tempImgs').on('mouseout', function(event) {
+      $(this).addClass('hide');
+    });
+  }
+  
+});
+
+
+</script>

@@ -1,0 +1,318 @@
+<style type="text/css">
+textarea.form-control{
+	height:100px;
+}
+.tempImgs,
+.showImg{
+	left: 15px;
+	top: 38px;
+	max-width: 300px;
+	width:auto;
+	position:absolute;
+	z-index: 10000;
+}
+.btn{
+	margin-top: 10px;
+}
+</style>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+	                <h5>编辑</h5>
+                </div>
+                <div class="ibox-content">
+	                <button type="button" data-form-action="App.load_page(App.last_page)" class="btn btn-sm btn-primary">返回</button>
+                    <form class="form-horizontal" submit-url="{:U('')}" method="POST">
+	                    <input type="hidden" name="p" value="<?php echo I('get.p'); ?>" >
+	                    <input type="hidden" name="table" value="<?php echo I('table'); ?>" >
+	                    <input type="hidden" name="id" value="<?php echo I('id'); ?>" >
+                        <?php foreach ($attributes as $key => $value) : ?>
+
+							<?php if (in_array(intval($value['is_show']), [0, 1, 4, 5])) : ?>
+							continue;
+							<?php elseif (I('id') && in_array(intval($value['is_show']), [0, 1, 2, 3])) : ?>
+							continue;
+							<?php endif ?>
+
+	                        <div class="form-group">
+	                            <label class="col-sm-2 control-label">
+		                            <span class="red"><?php echo $value['is_must']?'*':'&nbsp;'; ?></span>
+		                            <span><?php echo $value['title']; ?></span>：
+	                            </label>
+		                    	<?php
+			                      switch ($value['type']) { //link:链接 string:文字 number:数字 select:单选 bool:二选一 checkbox:多选 textarea:文字域 img:图片 file:文件 editor:编辑器 time:时间 ctime:添加时间 
+			                        case 'string':
+			                        case 'lstring':
+			                        case 'link':
+			                        case 'number':?>
+			                            <div class="col-sm-6">
+						                    <input class="form-control" <?php echo $value['is_must']?'required':''; ?> data-msg-required="<?php echo $value['remark']; ?>" type="<?php echo $value['type']=='number'?'number':'text'; ?>" name="<?php echo $value['name']; ?>" value="<?php echo $data[$value['name']]? : $value['default']; ?>">
+			                            </div>
+
+	                                <?php break;
+			                        case 'bool':
+			                        case 'select':
+										if ($value['extra']) {
+											$options = option_arr($value['extra']);
+											$value['options'] = $options;
+							            }?>
+			                            <div class="col-sm-6">
+                                      <select name="<?php echo $value['name']; ?>" class="form-control" >
+                                          <?php foreach ($value['options'] as $k => $v): ?>
+                                          <option value="<?php echo $v[0]; ?>" <?php echo $data[$value['name']]==$v[0]? 'selected': ''; ?> ><?php echo $v[1]; ?></option>
+                                          <?php endforeach ?>
+                                      </select>
+                                  </div>
+	                                <?php break;
+			                        case 'textarea': ?>
+			                            <div class="col-sm-6">
+			                                <textarea class="form-control" type="<?php echo $value['type']=='number'?'number':'text'; ?>" name="<?php echo $value['name']; ?>" ><?php echo $data[$value['name']]? : $value['default']; ?></textarea>
+                                  </div>
+	                                <?php break;
+			                        case 'img': ?>
+			                            <div class="col-sm-6 pos-r">
+	                                        <input class="form-control" type="text" readonly="readonly" name="<?php echo $value['name']; ?>" value="<?php echo $data[$value['name']]? : $value['default']; ?>">
+	                                        <a href="javascript:void(0);" class="btn btn-primary" onclick="upImage(this);">上传图片</a>
+                                  </div>
+	                                <?php break;
+			                        case 'imgs': ?>
+			                            <div class="col-sm-6 pos-r">
+	                                        <input class="form-control" type="text" readonly="readonly" name="<?php echo $value['name']; ?>" value="<?php echo $data[$value['name']]? : $value['default']; ?>">
+	                                        <a href="javascript:void(0);" class="btn btn-primary" onclick="upImage(this);">上传图片</a>
+                                  </div>
+	                                <?php break;
+			                        case 'file': ?>
+			                            <div class="col-sm-6">
+		                                    <input class="form-control" type="text" name="<?php echo $value['name']; ?>" value="<?php echo $data[$value['name']]? : $value['default']; ?>" readonly>
+		                                    <a href="javascript:void(0);" class="btn btn-primary" onclick="upFiles(this);">上传文件</a>
+                                  </div>
+	                                <?php break;
+			                        case 'editor': ?>
+			                            <div class="col-sm-6"><script type="text/javascript" id="editor" name="<?php echo $value['name']; ?>"  style="width:810px;height:500px;"><?php echo $data[$value['name']]? : $value['default']; ?></script></div>
+	                                <?php break;
+			                        case 'time': 
+			                        case 'ctime': ?>
+			                            <div class="col-sm-6">
+			                                <input class="form-control flatpickr" data-enable-time="true" data-time_24hr="true" type="text" name="<?php echo $value['name']; ?>" value="<?php echo $data[$value['name']]? date('Y-m-d H:i',$data[$value['name']]): $value['default']; ?>">
+                                  </div>
+                                <?php break;
+				                        default:?>
+
+
+	                                <?php break;
+							                      } ?>
+			                    <span class="red"><?php echo $value['remark']; ?></span>
+		                    </div>
+	                        <div class="hr-line-dashed m-t-sm m-b-sm"></div>
+                            <?php endforeach ?>
+	                        <div class="form-group">
+	                            <div class="col-sm-12 col-sm-offset-2">
+	                                <button class="btn btn-primary" type="submit" data-form-action="App.submit_form"><i class="fa fa-check"></i> 保存</button>　<button  type="reset" class="btn btn-white btn-bitbucket"><i class="fa fa-refresh"></i> 重置</button>
+	                            </div>
+	                        </div>
+	                        <div class="clearfix"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<form action="" method="post" class="form form-horizontal" id="form-article-add">
+	<div class="row cl">
+		<label class="form-label col-2"><span class="c-red">*</span>图文标题：</label>
+		<div class="formControls col-10">
+			<input type="text" class="input-text" value="<?php echo $pictext_data['title']; ?>" placeholder="" id="" name="title">
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-2"><span class="c-red">*</span>展示图片：</label>
+		<div class="formControls col-10">
+			<input type="text" class="input-text" value="<?php echo $pictext_data['pic_url']; ?>" placeholder="" id="" name="pic_url">
+			<div class="uploader-thum-container hide">
+				<div id="fileList" class="uploader-list"></div>
+				<div id="filePicker">选择图片</div>
+				<button id="btn-star" class="btn btn-default btn-uploadstar radius ml-10">开始上传</button>
+			</div>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-2"><span class="c-red">*</span>图文简介：</label>
+		<div class="formControls col-10">
+			<textarea name="desc" cols="" rows="" class="textarea"  placeholder="说点什么...最少输入10个字符" datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" onKeyUp="textarealength(this,200)"><?php echo $pictext_data['desc']; ?></textarea>
+			<p class="textarea-numberbar"><em class="textarea-length">0</em>/60</p>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-2">外部链接：</label>
+		<div class="formControls col-10 skin-minimal ">
+			<div class="check-box  <?php echo $pictext_data['is_url']==1?'checked':''; ?>" check="<?php echo $pictext_data['is_url']; ?>" >
+				<input type="checkbox" id="checkbox-pinglun" name="is_url" >
+				<label for="checkbox-pinglun">使用外部链接不用输入内容,直接跳转到链接地址上.</label>
+			</div>
+		</div>
+	</div>
+	<div class="row cl hide url ">
+		<label class="form-label col-2">外链地址：</label>
+		<div class="formControls col-10">
+			<input type="text" class="input-text" value="<?php echo $pictext_data['url']?$pictext_data['url']:'http://'; ?>" placeholder="" id="" name="url">
+		</div>
+	</div>
+
+	<div class="row cl content ">
+		<label class="form-label col-2 ">图文内容：</label>
+		<div class="formControls col-8 "><script id="editor" name="content" type="text/plain" style="width:100%;height:400px;"><?php echo htmlspecialchars_decode($pictext_data['content']); ?></script></div>
+	</div>
+	<div class="row cl">
+		<div class="col-10 col-offset-2">
+			<button onClick="" class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 保存并启用</button>
+			<button onClick="layer_close();" class="btn btn-default radius" type="reset">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+		</div>
+	</div>
+</form>
+
+
+
+
+
+
+
+
+
+
+<script type="text/plain" name="ddd" class="hide" id="upload"></script>
+<!-- <script type="text/javascript" charset="utf-8" src="__PUBLIC__/admin/js/flatpickr.js"></script> -->
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/js/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/js/ueditor/ueditor.all.min.js">
+</script>
+<script type="text/javascript">
+if ($('#editor').attr('name')) {
+	//实例化编辑器
+	//建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
+	var ue = UE.getEditor('editor');
+	setTimeout(function() {
+	    $('.edui-button-body').on('click', function(event) {
+	        event.preventDefault();
+	        $('.admin-header').toggleClass('hide');
+	    });
+	}, 500);
+};
+
+
+
+
+
+//重新实例化一个编辑器，防止在上面的editor编辑器中显示上传的图片或者文件
+var _editor = UE.getEditor('upload');
+var uploadBtn = null;
+_editor.ready(function() {
+    //隐藏编辑器，因为不会用到这个编辑器实例，所以要隐藏
+    _editor.hide();
+    //侦听图片上传
+    _editor.addListener('beforeInsertImage', function(editor, arg) {
+
+            //将地址赋值给相应的input
+            changeImgInput(arg);
+
+        })
+        //侦听文件上传，取上传文件列表中第一个上传的文件的路径
+    _editor.addListener('afterUpfiles', function(t, arg) {
+        changeFileInput(arg);
+    })
+});
+//弹出图片上传的对话框
+function upImage(that) {
+    uploadBtn = that;
+    _editor.setContent('');
+    var myImage = _editor.getDialog("insertimage");
+    myImage.open();
+}
+//弹出文件上传的对话框
+function upFiles(that) {
+    uploadBtn = that;
+    _editor.setContent('');
+    var myFiles = _editor.getDialog("attachment");
+    myFiles.open();
+}
+
+var imgUpdate = 0;
+function changeImgInput(arg) {
+	console.log(arg)
+	imgUpdate = 1;
+	var imgs = '';
+	for (var i = 0; i < arg.length; i++) {
+		imgs += arg[i].src + ','
+	};
+	imgs = imgs.substring(0,imgs.length-1);
+
+  $(uploadBtn).siblings("input").val(imgs);
+}
+
+function changeFileInput(arg) {
+    var con = '';
+    for (var i = 0; i < arg.length; i++) {
+        con += arg[i].url + ',';
+    };
+    con = con.substring(0, con.length - 1);
+    $(uploadBtn).siblings('input').val(con);
+}
+
+function getContentTxt() {
+    alert(_editor.getContentTxt());
+}
+
+
+$('input[readonly=readonly]').hover(function (argument) {
+	$tempImgs = $(this).parent().children('.tempImgs');
+
+	if($tempImgs.length<=0 || imgUpdate == 1 ){
+		that = this;
+		var ids = $(this).val().split(',')
+    $('<div>').addClass('tempImgs').appendTo( $(that).parent() )
+
+		for (var i = 0; i < ids.length; i++) {
+			$.ajax({
+				url: 'index.php?m=Admin&c=Ueditor&a=imgUrl',
+				type: 'post',
+				dataType: 'text',
+				data: {id: ids[i]},
+			})
+			.done(function(data) {
+	    	$('<img>').attr({
+	    		'src': data,
+	    	}).appendTo( $(that).parent().children('.tempImgs') );
+	    	imgUpdate = 0;
+			})
+
+		};
+
+	}else{
+    	$tempImgs.removeClass("hide");
+	}
+},function (argument) {
+	$tempImgs = $(this).parent().children('.tempImgs');
+	$tempImgs.addClass("hide");
+
+})
+
+
+
+
+
+
+
+
+
+
+
+var calendars = document.getElementsByClassName("flatpickr").flatpickr();
+
+
+
+</script>
+
+

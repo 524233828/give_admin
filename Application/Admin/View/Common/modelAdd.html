@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <include file="Base/_header" />
+    <load href="__PUBLIC__/Admin/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" stylesheet="text/css" />
+    <title>添加模型</title>
+</head>
+<body>
+<div class="pd-20" >
+    <form action="{:U('')}" method="post" class="form form-horizontal" id="form-article-add">
+        <div class="row cl">
+            <label class="form-label col-3"><span class="c-red">*</span>表：</label>
+            <div class="formControls col-8">
+                <input type="text" class="input-text" value="<?php echo $table; ?>" placeholder="" id="" name="table">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-3"><span class="c-red">*</span>表名称：</label>
+            <div class="formControls col-8">
+                <input type="text" class="input-text" value="<?php echo $title; ?>" placeholder="" id="" name="title">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-3">添加字段：</label>
+            <div class="formControls col-8 ">
+                <?php foreach ($fields as $key => $value): ?>
+                    <div>
+                        <input type="checkbox" class="checkbox-pinglun" <?php echo $value['field']=='id' || $value['field']=='status'?'':'checked'; ?> name="fields[]" value="<?php echo $value['field']; ?>" >
+                        <label for="checkbox-pinglun"><?php echo $value['field'].'-'.$value['comment']; ?></label>
+                    </div>
+                <?php endforeach ?>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-8 col-offset-3">
+                <button onClick="" class="btn btn-primary " type="submit"><i class="Hui-iconfont">&#xe632;</i> 保存</button>
+                <button onClick="layer_close();" class="btn btn-default " type="reset">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+            </div>
+        </div>
+    </form>
+    <div class="pd-10">
+        <?php foreach ($show_text as $key => $value): ?>
+            <div><?php echo $value; ?></div>
+        <?php endforeach ?>
+    </div>
+</div>
+<include file="Base/_footer" />
+<script type="text/javascript">
+
+$('.checkbox-pinglun').click(function(event) {
+    if( $(this).attr('num')=='1' ){
+        $('.content').removeClass('hide');
+        $('.url').addClass('hide');
+        $(this).attr('num','0');
+        $(this).val(0);
+    }else{
+        $('.content').addClass('hide');
+        $('.url').removeClass('hide');
+        $(this).attr('num','1');        
+        $(this).val(1);
+    }
+});
+
+    
+if ( $('.check-box').attr('check')=='1'  ) {
+    $('.checkbox-pinglun').trigger('click');
+};
+
+
+
+</script>
+</body>
+</html>
