@@ -1,0 +1,9 @@
+.idea
+/Application/Runtime/*
+/Uploads
+/Data/logs/*
+**/node_modules
+/Data/
+/vendor
+.env
+/Public/download_dir/*
