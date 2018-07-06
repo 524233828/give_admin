@@ -6,11 +6,12 @@
 }
 .table td .list-textarea {
     text-align: left;
-    max-width: 400px;
-    max-height: 400px;
+    max-width: 200px;
+    max-height: 60px;
     overflow: hidden;
+    margin: 0 auto;
 }
-.page a,
+
 .page span {
     padding: 2px 6px;
     margin-left: 4px;
@@ -19,11 +20,40 @@
 .pos-r {
     position: relative;
 }
-.tempImgs{
+
+.tempImgs {
     position: absolute;
     z-index: 999;
 }
 .tempImgs>img {
     max-width: 400px;
     max-height: 400px;
+}
+.showImgs {
+    width: 50px;
+    margin: 0 auto;
+    position: absolute;
+}
+.tempImgs,
+.tempImg{
+    position: absolute;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    max-width: 400px;
+    max-height: 400px;
+}
+.showImgs,
+.showImg {
+    width: 50px;
+    margin: 0 auto;
+    top: 0;
+}
+.o-h {
+    overflow: hidden;
+}
+.foreign_key {
+    position: absolute;
+    bottom: 0;
+    left: 0
 }

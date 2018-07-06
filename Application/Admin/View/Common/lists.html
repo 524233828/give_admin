@@ -61,12 +61,12 @@
 					<?php switch ($v['type']) {
 								case 'img':?>
 					<td class="pos-r">
-						<div class="t-c pos-a t-0 l-0 full showImg" style="background: url(<?php echo $value[$v['name']]; ?>) center center no-repeat;background-size:contain;height: 40px;" src="<?php echo $value[$v['name']]; ?>" ></div>
+						<div class="showImg o-h" style="background: url(<?php echo $value[$v['name']]; ?>) center center no-repeat;background-size:contain;height: 60px;" src="<?php echo $value[$v['name']]; ?>" ></div>
 					</td>
 					<?php break;
 								case 'imgs':?>
 					<td class="pos-r">
-						<div class="t-c pos-a t-0 l-0 full showImgs" style="background: url(<?php echo $value[$v['name']][0]; ?>) center center no-repeat;background-size:contain;height: 40px;" src="<?php echo implode(',', $value[$v['name']]); ?>" ></div>
+						<div class="showImgs o-h" style="background: url(<?php echo $value[$v['name']][0]; ?>) center center no-repeat;background-size:contain;height: 60px;" src="<?php echo implode(',', $value[$v['name']]); ?>" ></div>
 					</td>
 					<?php break;
 								case 'lstring':?>
@@ -94,9 +94,9 @@
 								case 'bool':?>
 					<td>
 						<?php if ($value[$v['name']]): ?>
-						<span class="text-navy" onclick="isIndex(this,'17',2)">是</span>
+						<a class="pd-5 btn-success" onclick="isIndex(this, '<?php echo $table; ?>', '<?php echo $value['id']; ?>')">是</a>
 						<?php else: ?>
-						<span class="text-danger" onclick="isIndex(this,'17',2)">否</span>
+						<a class="pd-5 btn-danger" onclick="isIndex(this, '<?php echo $table; ?>', '<?php echo $value['id']; ?>')">否</a>
 						<?php endif ?>
 					</td>
 					<?php break;
@@ -251,6 +251,64 @@ function listenEnter (that) {
     $(that).parents('form').find('button').trigger('click');
   };
 }
+
+//显示大图
+$('.showImg').on('mouseover', function(event) {
+  var $tempImg = $(this).parent().children('.tempImg')
+  if ($tempImg.attr('src')) {
+    $tempImg.removeClass('hide')
+  } else {
+    $('<img>').addClass('tempImg').attr('src', $(this).attr('src')).appendTo( $(this).parent() )
+    $('.tempImg').on('mouseout', function(event) {
+      $(this).addClass('hide');
+    });
+  }
+});
+
+//显示多个大图
+$('.showImgs').on('mouseover', function(event) {
+  var $tempImg = $(this).parent().children('.tempImg')
+  if ($tempImg.attr('src')) {
+    $tempImg.removeClass('hide')
+  } else {
+    var imgs = $(this).attr('src');
+    imgs = imgs.split(',');
+    $tempImgs = $('<div>').addClass('tempImgs')
+    for (var i = 0; i < imgs.length; i++) {
+      $('<img>').attr('src', imgs[i]).appendTo( $tempImgs )
+    };
+    $tempImgs.appendTo( $(this).parent() );
+
+    $('.tempImgs').on('mouseout', function(event) {
+      $(this).addClass('hide');
+    });
+  }
+});
+
+
+$('.fkey').hover(function() {
+	var that = this
+	if ($(this).children('.foreign_key').html()) {
+		$(this).children('.foreign_key').removeClass("hide");
+	} else {
+		$.ajax({
+			url: "{:U('getForeignKey')}",
+			type: 'post',
+			dataType: 'html',
+			data: {
+				table: $(this).attr('data-table'),
+				fkey: $(this).attr('data-fkey'),
+				fvalue: $(this).attr('data-fvalue'),
+			},
+		})
+		.done(function(res) {
+			$(that).append(res);
+		})		
+	}
+	
+}, function() {
+	$(this).children('.foreign_key').addClass("hide");
+});
 </script> 
 </body>
 </html>

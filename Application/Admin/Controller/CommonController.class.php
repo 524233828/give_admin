@@ -180,18 +180,16 @@ class CommonController extends BaseController {
 	 * to_field:		//外键直接转换成的字段
 	 * link:			//点击跳转的链接
 	 * fields:portrait|portrait,nickname,phone,email
-	 * @return [type] [description]
 	 */
 	public function getForeignKey()
 	{
-
 		$fvalue = I('post.fvalue');
 		$where['model_table'] = I('post.table');
 		$where['name'] = $fkey = I('post.fkey');
 		$extra = M('attribute')->where($where)->getField('extra');
 		$extra_arr = option_arr($extra,'list');
 		$fields_arr = explode(",",$extra_arr['fields']);
-
+        $types = $fields = [];
 		foreach ($fields_arr as $key => $value) {
 			list($field, $type) = explode("|",$value);
 			$fields[] = $field;
@@ -207,18 +205,21 @@ class CommonController extends BaseController {
         foreach ($info as $key => $value) {
         	switch ($types[$key]) {
         		case 'portrait':
-        		case 'img':
-        			$text .= '<div class="'. $types[$key] .' f-c" style="background: url('. $this->picurl($value) .') no-repeat center center ;background-size:cover; " ></div>';
-        			break;
-        		
+                    $text .= '<div class="'. $types[$key] .' f-c" style="background: url('. $value .') no-repeat center center ;background-size:cover; " ></div>';
+                    break;
+                case 'img':
+                    $text .= '<div class="'. $types[$key] .' f-c" style="background: url('. M('Image')->imgUrl($value) .') no-repeat center center ;background-size:cover; " ></div>';
+                    break;
+
         		default:
         			$text .=  '<div class="'. $types[$key] .'" >'. $value .'</div>';
         			break;
         	}
         }
         $text .= '</div>';
+        die($text);
         $data['text'] = $text;
-        $this->respondJson('0001','',$data);
+        $this->ajaxReturn($data);
 
 	} 
 

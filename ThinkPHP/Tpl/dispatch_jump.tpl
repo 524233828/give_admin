@@ -38,12 +38,19 @@ body{ background: #fff; font-family: '微软雅黑'; color: #333; font-size: 16p
 var wait = document.getElementById('wait'),href = document.getElementById('href').href;
 var interval = setInterval(function(){
 	var time = --wait.innerHTML;
-	if(time <= 0) {
-		location.href = href;
-		clearInterval(interval);
-	};
+    if(time <= 0) {
+        // location.href = href;
+        clearInterval(interval);
+        layer_close();
+    };
 }, 1000);
 })();
+
+/*关闭弹出框口*/
+function layer_close(){
+    var index = parent.layer.getFrameIndex(window.name);
+    parent.layer.close(index);
+}
 </script>
 </body>
 </html>
