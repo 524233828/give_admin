@@ -39,17 +39,21 @@ var wait = document.getElementById('wait'),href = document.getElementById('href'
 var interval = setInterval(function(){
 	var time = --wait.innerHTML;
     if(time <= 0) {
-        // location.href = href;
         clearInterval(interval);
         layer_close();
+        setTimeout(function () {
+            location.href = href;
+        }, 500);
     };
 }, 1000);
 })();
 
 /*关闭弹出框口*/
 function layer_close(){
-    var index = parent.layer.getFrameIndex(window.name);
-    parent.layer.close(index);
+    if (typeof(parent.layer) !== 'undefined') {
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+    }
 }
 </script>
 </body>

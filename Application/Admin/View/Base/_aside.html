@@ -8,7 +8,7 @@
             <ul>
               <?php if (isset($menu['son'])): ?>
                 <?php foreach ($menu['son'] as $child_menu): ?>
-                  <li><a _href="{:U('admin/' . $child_menu['m'] . '/' . $child_menu['a'], option_arr($child_menu['params'], 'list'))}" href="javascript:void(0)">{$child_menu.name}</a></li>
+                  <li><a _href="{:U('admin/' . $child_menu['controller'] . '/' . $child_menu['action'], option_arr($child_menu['params'], 'list'))}" href="javascript:void(0)">{$child_menu.name}</a></li>
                 <?php endforeach ?>
               <?php endif ?>
             </ul>

@@ -24,7 +24,7 @@ class CommonController extends BaseController {
      */
 	public function edit($to_url = null)
 	{
-		parent::edit();
+        parent::edit();
 		$this->display();
 	}
 
@@ -160,17 +160,6 @@ class CommonController extends BaseController {
 	}
 
 	/**
-	 * 获取用户信息
-	 */
-	public function getUserinfo()
-	{
-		$where['id'] = I('post.uid');
-		$info = M('userinfo')->where($where)->field('nickname,portrait,phone,email')->find();
-		!$info && $this->respondJson('0002');
-		$this->respondJson('0001','',$info);
-	} 
-
-	/**
 	 * 获取外键表的数据
 	 * attribute表 type: fkey
 	 * 
@@ -199,29 +188,24 @@ class CommonController extends BaseController {
 		$to_key = $extra_arr['to_key'] ? : 'id';
 		$where2[$to_key] = $fvalue;
 		$info = M($extra_arr['ftable'])->field($fields)->where($where2)->find();
-
-
-        $text = '<div class="pos-a foreign_key t-c">';
+        $info2 = [];
         foreach ($info as $key => $value) {
-        	switch ($types[$key]) {
-        		case 'portrait':
-                    $text .= '<div class="'. $types[$key] .' f-c" style="background: url('. $value .') no-repeat center center ;background-size:cover; " ></div>';
-                    break;
+            $info2[$key]['type'] = $types[$key] ? : 'string';
+            switch ($info2[$key]['type']) {
                 case 'img':
-                    $text .= '<div class="'. $types[$key] .' f-c" style="background: url('. M('Image')->imgUrl($value) .') no-repeat center center ;background-size:cover; " ></div>';
+                    $info2[$key]['value'] = D('image')->imgUrl($value);
                     break;
+                case 'imgs':
+                    $info2[$key]['value'] = D('image')->imgUrl(explode(',', $value)[0]);
+                    break;
+                default:
+                    $info2[$key]['value'] = $value;
+                    break;
+            }
+		}
 
-        		default:
-        			$text .=  '<div class="'. $types[$key] .'" >'. $value .'</div>';
-        			break;
-        	}
-        }
-        $text .= '</div>';
-        die($text);
-        $data['text'] = $text;
-        $this->ajaxReturn($data);
-
-	} 
+        $this->success(['list' => $info2, 'extra' => $extra_arr]);
+	}
 
 	public function clearCache(){
         $admin_info = session('admin_info');
