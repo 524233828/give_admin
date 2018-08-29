@@ -23,6 +23,7 @@ class BaseController extends Controller
      */
     protected function checkLogin()
     {
+
         if (!($admin_info = session('admin_info')) && CONTROLLER_NAME != 'Admin') {
             redirect(U('admin/login'));
             return;
@@ -91,7 +92,7 @@ class BaseController extends Controller
             }
         }
 
-        //搜索关键词
+        //旧版搜索 表里配置
         $search_list = option_arr($model['search_list']);
 
 
@@ -116,8 +117,22 @@ class BaseController extends Controller
                     }
                 }
             }
-            
+
         }
+
+        //新版搜索 key:value
+        $search2_k = $search2_v = null;
+        if (I('search2_k') != null) {
+            $search2_k = I('search2_k');
+            $search2_v = I('search2_v');
+        }
+        if ($search2_k == 'id') {
+            $where[$search2_k] = $search2_v;
+        } else {
+            $where[$search2_k] = ['LIKE','%' . $search_v . '%'];
+        }
+
+//        P($where);
         $page = $this->page($table,$where);
         $list = M($table)->where($where)->order($model['list_sort']?:' id desc')->limit($page['limit'])->select();
         foreach ($list as $key => $value) {

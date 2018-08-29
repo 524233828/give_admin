@@ -38,12 +38,23 @@ body{ background: #fff; font-family: '微软雅黑'; color: #333; font-size: 16p
 var wait = document.getElementById('wait'),href = document.getElementById('href').href;
 var interval = setInterval(function(){
 	var time = --wait.innerHTML;
-	if(time <= 0) {
-		location.href = href;
-		clearInterval(interval);
-	};
+    if(time <= 0) {
+        clearInterval(interval);
+        layer_close();
+        setTimeout(function () {
+            location.href = href;
+        }, 500);
+    };
 }, 1000);
 })();
+
+/*关闭弹出框口*/
+function layer_close(){
+    if (typeof(parent.layer) !== 'undefined') {
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+    }
+}
 </script>
 </body>
 </html>

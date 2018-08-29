@@ -32,8 +32,6 @@
 		            <input class="txt left" type="hidden" name="search_k[]" value="<?php echo trim($value[1]); ?>" />
 	            <?php endforeach ?>        		
         	<?php endif ?>
-        	
-
 			<button name="" id="" class="btn btn-success" type="submit"><i class="Hui-iconfont">&#xe665;</i>搜索</button>
 		</form>
 	</div>
@@ -61,12 +59,12 @@
 					<?php switch ($v['type']) {
 								case 'img':?>
 					<td class="pos-r">
-						<div class="t-c pos-a t-0 l-0 full showImg" style="background: url(<?php echo $value[$v['name']]; ?>) center center no-repeat;background-size:contain;height: 40px;" src="<?php echo $value[$v['name']]; ?>" ></div>
+						<div class="showImg o-h" style="background: url(<?php echo $value[$v['name']]; ?>) center center no-repeat;background-size:contain;height: 60px;" src="<?php echo $value[$v['name']]; ?>" ></div>
 					</td>
 					<?php break;
 								case 'imgs':?>
 					<td class="pos-r">
-						<div class="t-c pos-a t-0 l-0 full showImgs" style="background: url(<?php echo $value[$v['name']][0]; ?>) center center no-repeat;background-size:contain;height: 40px;" src="<?php echo implode(',', $value[$v['name']]); ?>" ></div>
+						<div class="showImgs o-h" style="background: url(<?php echo $value[$v['name']][0]; ?>) center center no-repeat;background-size:contain;height: 60px;" src="<?php echo implode(',', $value[$v['name']]); ?>" ></div>
 					</td>
 					<?php break;
 								case 'lstring':?>
@@ -94,17 +92,18 @@
 								case 'bool':?>
 					<td>
 						<?php if ($value[$v['name']]): ?>
-						<span class="text-navy" onclick="isIndex(this,'17',2)">是</span>
+							<span class="pd-5 btn-success" onclick2="isIndex(this, '<?php echo $table; ?>', '<?php echo $value['id']; ?>')">是</span>
 						<?php else: ?>
-						<span class="text-danger" onclick="isIndex(this,'17',2)">否</span>
+							<span class="pd-5 btn-danger" onclick2="isIndex(this, '<?php echo $table; ?>', '<?php echo $value['id']; ?>')">否</span>
 						<?php endif ?>
 					</td>
 					<?php break;
 								case 'select':?>
-					<td><?php
-									$options = option_arr($v['extra'],'list');
-									echo $options[ $value[$v['name']] ]; ?></td>
-
+					<td>
+					<?php
+							$options = option_arr($v['extra'],'list');
+							echo $options[ $value[$v['name']] ]; ?>
+					</td>
 					<?php break;
 								case 'value':?>
 					<td><?php echo $value[$v['name']]; ?></td>
@@ -119,7 +118,6 @@
 					<?php  break;
 						  } ?>
 					<?php endforeach ?>
-
 					<td class="td-status">
 						<a title="修改" href="javascript:;" onclick="follow_edit(this, '修改');" link-url="{:U('Common/edit',['table'=>$table, id=>$value['id'], 'p'=>I('get.p')])}" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
 						<a title="删除" href="javascript:follow_del(this, '<?php echo $table; ?>', '<?php echo $value['id']; ?>')" class="ml-5" style="text-decoration:none" ><i class="Hui-iconfont"></i></a>
@@ -251,6 +249,99 @@ function listenEnter (that) {
     $(that).parents('form').find('button').trigger('click');
   };
 }
+
+//显示大图
+$('.showImg').on('mouseover', function(event) {
+  var $tempImg = $(this).parent().children('.tempImg')
+  if ($tempImg.attr('src')) {
+    $tempImg.removeClass('hide')
+  } else {
+    $('<img>').addClass('tempImg').attr('src', $(this).attr('src')).appendTo( $(this).parent() )
+    $('.tempImg').on('mouseout', function(event) {
+      $(this).addClass('hide');
+    });
+  }
+});
+
+//显示多个大图
+$('.showImgs').on('mouseover', function(event) {
+  var $tempImg = $(this).parent().children('.tempImg')
+  if ($tempImg.attr('src')) {
+    $tempImg.removeClass('hide')
+  } else {
+    var imgs = $(this).attr('src');
+    imgs = imgs.split(',');
+    $tempImgs = $('<div>').addClass('tempImgs')
+    for (var i = 0; i < imgs.length; i++) {
+      $('<img>').attr('src', imgs[i]).appendTo( $tempImgs )
+    };
+    $tempImgs.appendTo( $(this).parent() );
+
+    $('.tempImgs').on('mouseout', function(event) {
+      $(this).addClass('hide');
+    });
+  }
+});
+
+
+$('.fkey').hover(function() {
+	var that = this
+	var table = $(this).attr('data-table');
+	var fkey = $(this).attr('data-fkey');
+	var fvalue = $(this).attr('data-fvalue');
+	if ($(this).children('.foreign_key_wrap').html()) {
+		$(this).children('.foreign_key_wrap').removeClass("hide");
+	} else {
+		$.ajax({
+			url: "{:U('getForeignKey')}",
+			type: 'post',
+			dataType: 'json',
+			data: {
+				table: table,
+				fkey: fkey,
+				fvalue: fvalue,
+			},
+		})
+		.done(function(res) {
+			if (res.status == 1) {
+			console.log(res);
+				var html = '<span onclick="goForeignKey(this)" data-ftable="'+ res.info.extra.ftable +'" data-to_key="'+ res.info.extra.to_key +'" data-fvalue="'+ fvalue +'" class="foreign_key_wrap" >';
+					html += '<div class="foreign_key">';
+				for (var v in res.info.list) {
+					data = res.info.list[v];
+					switch (data.type) {
+						case 'portrait': 
+						case 'img': 
+							html += '<div class="'+ data.type +'" ><img src="'+ data.value +'" alt="" /></div>';
+							break;
+						default: 
+							html += '<div class="'+ data.type +'" style="" >'+ data.value +'</div>';
+							break;
+					}
+				}
+				html += '</div>';
+				html += '</span>';
+				$(that).append(html);
+			}
+		})		
+	}
+	
+}, function() {
+	$(this).children('.foreign_key_wrap').addClass("hide");
+});
+
+function goForeignKey(that) {
+	var ftable = $(that).attr('data-ftable');
+	var to_key = $(that).attr('data-to_key');
+	var fvalue = $(that).attr('data-fvalue');
+	var index = layer.open({
+		type: 2,
+		title: '详情',
+		content: "{:U('Common/lists')}&table="+ ftable +'&search2_k='+ to_key +'&search2_v='+ fvalue
+	});
+	layer.full(index);
+}
+
 </script> 
 </body>
 </html>
